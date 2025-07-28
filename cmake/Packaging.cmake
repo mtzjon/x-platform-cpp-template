@@ -1,0 +1,41 @@
+# CPack configuration for packaging
+
+include(InstallRequiredSystemLibraries)
+
+set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
+set(CPACK_PACKAGE_VENDOR "Your Company")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${PROJECT_DESCRIPTION})
+set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
+set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+set(CPACK_PACKAGE_INSTALL_DIRECTORY ${PROJECT_NAME})
+set(CPACK_RESOURCE_FILE_LICENSE ${CMAKE_SOURCE_DIR}/LICENSE)
+set(CPACK_RESOURCE_FILE_README ${CMAKE_SOURCE_DIR}/README.md)
+
+# Platform-specific packaging
+if(WIN32)
+    set(CPACK_GENERATOR "NSIS;ZIP")
+    set(CPACK_NSIS_DISPLAY_NAME ${PROJECT_NAME})
+    set(CPACK_NSIS_PACKAGE_NAME ${PROJECT_NAME})
+    set(CPACK_NSIS_CONTACT "your-email@company.com")
+    set(CPACK_NSIS_HELP_LINK "https://github.com/yourcompany/cpp_template")
+elseif(APPLE)
+    set(CPACK_GENERATOR "DragNDrop;TGZ")
+    set(CPACK_DMG_FORMAT "UDBZ")
+    set(CPACK_DMG_VOLUME_NAME ${PROJECT_NAME})
+else()
+    set(CPACK_GENERATOR "DEB;RPM;TGZ")
+    
+    # Debian package settings
+    set(CPACK_DEBIAN_PACKAGE_MAINTAINER "Your Name <your-email@company.com>")
+    set(CPACK_DEBIAN_PACKAGE_SECTION "devel")
+    set(CPACK_DEBIAN_PACKAGE_DEPENDS "libc6, libstdc++6")
+    
+    # RPM package settings
+    set(CPACK_RPM_PACKAGE_GROUP "Development/Libraries")
+    set(CPACK_RPM_PACKAGE_LICENSE "MIT")
+    set(CPACK_RPM_PACKAGE_REQUIRES "glibc, libstdc++")
+endif()
+
+include(CPack)

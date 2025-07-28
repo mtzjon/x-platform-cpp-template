@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  # Development environment
+  dev:
+    build:
+      context: .
+      target: development
+      args:
+        - BUILDKIT_INLINE_CACHE=1
+    volumes:
+      - .:/home/developer/workspace
+      - conan-cache:/home/developer/.conan2
+    working_dir: /home/developer/workspace
+    environment:
+      - CC=clang-15
+      - CXX=clang++-15
+    command: /bin/bash
+    stdin_open: true
+    tty: true
+
+  # Build and test
+  build:
+    build:
+      context: .
+      target: builder
+      args:
+        - BUILDKIT_INLINE_CACHE=1
+    volumes:
+      - build-artifacts:/workspace/build
+    environment:
+      - CC=clang-15
+      - CXX=clang++-15
+
+  # Testing with coverage
+  test:
+    build:
+      context: .
+      target: testing
+      args:
+        - BUILDKIT_INLINE_CACHE=1
+    volumes:
+      - test-results:/workspace/build
+    environment:
+      - CC=clang-15
+      - CXX=clang++-15
+
+  # Static analysis
+  analysis:
+    build:
+      context: .
+      target: analysis
+      args:
+        - BUILDKIT_INLINE_CACHE=1
+    volumes:
+      - .:/workspace
+      - analysis-results:/workspace/analysis
+    environment:
+      - CC=clang-15
+      - CXX=clang++-15
+
+  # Runtime
+  runtime:
+    build:
+      context: .
+      target: runtime
+      args:
+        - BUILDKIT_INLINE_CACHE=1
+    environment:
+      - LD_LIBRARY_PATH=/usr/local/lib
+
+  # Documentation server
+  docs:
+    build:
+      context: .
+      target: builder
+    volumes:
+      - ./build/docs/html:/usr/share/nginx/html:ro
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    depends_on:
+      - build
+
+volumes:
+  conan-cache:
+    driver: local
+  build-artifacts:
+    driver: local
+  test-results:
+    driver: local
+  analysis-results:
+    driver: local

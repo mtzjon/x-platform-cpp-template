@@ -1,0 +1,201 @@
+/* Custom styling for the documentation */
+
+/* Improve readability */
+body, table, div, p, dl {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Header styling */
+#titlearea {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-bottom: 1px solid #ddd;
+}
+
+#projectname {
+    font-size: 28px;
+    font-weight: bold;
+    color: white;
+}
+
+#projectnumber {
+    font-size: 18px;
+    color: #f0f0f0;
+}
+
+#projectbrief {
+    font-size: 16px;
+    color: #e0e0e0;
+    margin-top: 5px;
+}
+
+/* Navigation styling */
+.tablist li {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-bottom: none;
+}
+
+.tablist li.current {
+    background: white;
+    border-bottom: 1px solid white;
+}
+
+.tablist a {
+    color: #495057;
+    text-decoration: none;
+    padding: 8px 16px;
+    display: block;
+}
+
+.tablist a:hover {
+    background: #e9ecef;
+    color: #212529;
+}
+
+/* Content styling */
+.contents {
+    margin: 20px;
+}
+
+.textblock {
+    margin: 15px 0;
+}
+
+/* Code blocks */
+.fragment {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 12px;
+    margin: 10px 0;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/* Function documentation */
+.memitem {
+    background: #ffffff;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    margin: 15px 0;
+    padding: 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.memproto {
+    background: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    padding: 12px 15px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 13px;
+}
+
+.memdoc {
+    padding: 15px;
+}
+
+/* Parameter tables */
+.params {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.params th {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 8px 12px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.params td {
+    border: 1px solid #dee2e6;
+    padding: 8px 12px;
+    vertical-align: top;
+}
+
+/* Links */
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* Class hierarchy */
+.hierarchy {
+    margin: 10px 0;
+}
+
+.hierarchy table {
+    border-collapse: collapse;
+}
+
+.hierarchy td {
+    padding: 3px 6px;
+    border: none;
+}
+
+/* Directory tree */
+.directory {
+    margin: 10px 0;
+}
+
+.directory table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.directory td {
+    padding: 4px 8px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+/* Search box */
+#MSearchBox {
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+/* Warning/note boxes */
+.note, .warning, .attention {
+    border-radius: 4px;
+    padding: 12px 15px;
+    margin: 15px 0;
+    border-left: 4px solid;
+}
+
+.note {
+    background: #e7f3ff;
+    border-left-color: #2196F3;
+}
+
+.warning {
+    background: #fff3cd;
+    border-left-color: #ffc107;
+}
+
+.attention {
+    background: #f8d7da;
+    border-left-color: #dc3545;
+}
+
+/* Footer */
+.footer {
+    color: #6c757d;
+    font-size: 12px;
+    text-align: center;
+    margin-top: 30px;
+    padding: 15px 0;
+    border-top: 1px solid #e9ecef;
+}
