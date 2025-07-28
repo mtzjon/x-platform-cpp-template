@@ -1,0 +1,422 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main, develop ]
+
+env:
+  CONAN_VERSION: "2.0.14"
+
+jobs:
+  # Code formatting and linting
+  format-and-lint:
+    name: Format and Lint
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Clang
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang-format clang-tidy
+
+    - name: Check formatting
+      run: |
+        # Check clang-format version and adjust if needed
+        clang-format --version
+        # Try with main config first, fall back to compatible version
+        if ! find src include examples tests -name "*.cpp" -o -name "*.hpp" | \
+             xargs clang-format --dry-run --Werror 2>/dev/null; then
+          echo "Main .clang-format failed, trying compatible version..."
+          find src include examples tests -name "*.cpp" -o -name "*.hpp" | \
+            xargs clang-format --style=file:.clang-format-compat --dry-run --Werror
+        fi
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install Conan
+      run: |
+        pip install conan==${{ env.CONAN_VERSION }}
+        conan profile detect --force
+
+    - name: Configure project
+      run: |
+        mkdir build && cd build
+        cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+
+    - name: Run clang-tidy
+      run: |
+        cd build
+        run-clang-tidy -p . ../src ../examples || true
+
+  # Build and test matrix
+  build-and-test:
+    name: Build and Test
+    needs: format-and-lint
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, ubuntu-20.04, macos-12, windows-2022]
+        build_type: [Release, Debug]
+        shared_libs: [ON, OFF]
+        exclude:
+          # Reduce matrix size for faster builds
+          - os: ubuntu-20.04
+            build_type: Debug
+          - os: macos-12
+            shared_libs: OFF
+          - os: windows-2022
+            build_type: Debug
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    # Linux setup
+    - name: Setup Linux dependencies
+      if: runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          cmake \
+          ninja-build \
+          clang \
+          clang++ \
+          doxygen \
+          graphviz
+
+    # macOS setup
+    - name: Setup macOS dependencies
+      if: runner.os == 'macOS'
+      run: |
+        brew install cmake ninja llvm doxygen graphviz
+
+    # Windows setup
+    - name: Setup Windows dependencies
+      if: runner.os == 'Windows'
+      uses: microsoft/setup-msbuild@v1.3
+
+    - name: Install Conan
+      run: |
+        pip install conan==${{ env.CONAN_VERSION }}
+        conan profile detect --force
+
+    # Set compiler for Linux
+    - name: Set Linux compiler
+      if: runner.os == 'Linux'
+      run: |
+        echo "CC=clang" >> $GITHUB_ENV
+        echo "CXX=clang++" >> $GITHUB_ENV
+
+    # Set compiler for macOS
+    - name: Set macOS compiler
+      if: runner.os == 'macOS'
+      run: |
+        echo "CC=$(brew --prefix llvm)/bin/clang" >> $GITHUB_ENV
+        echo "CXX=$(brew --prefix llvm)/bin/clang++" >> $GITHUB_ENV
+
+    - name: Configure CMake
+      run: |
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+          -DBUILD_SHARED_LIBS=${{ matrix.shared_libs }} \
+          -DBUILD_TESTS=ON \
+          -DBUILD_DOCS=${{ matrix.os == 'ubuntu-22.04' && 'ON' || 'OFF' }} \
+          -DBUILD_EXAMPLES=ON
+
+    - name: Build
+      run: cmake --build build --parallel
+
+    - name: Run tests
+      run: |
+        cd build
+        ctest --output-on-failure --parallel 2
+
+    - name: Run examples
+      run: |
+        cd build
+        ./examples/basic_usage
+        ./examples/config_example
+        ./examples/library_user
+
+    # Upload documentation (only for one configuration)
+    - name: Upload documentation
+      if: matrix.os == 'ubuntu-22.04' && matrix.build_type == 'Release' && matrix.shared_libs == 'OFF'
+      uses: actions/upload-artifact@v3
+      with:
+        name: documentation
+        path: build/docs/html/
+
+  # Coverage analysis
+  coverage:
+    name: Coverage Analysis
+    needs: format-and-lint
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          cmake \
+          ninja-build \
+          clang \
+          clang++ \
+          lcov \
+          gcovr
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install Conan
+      run: |
+        pip install conan==${{ env.CONAN_VERSION }}
+        conan profile detect --force
+
+    - name: Configure with coverage
+      run: |
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DENABLE_COVERAGE=ON \
+          -DBUILD_TESTS=ON
+      env:
+        CC: clang
+        CXX: clang++
+
+    - name: Build
+      run: cmake --build build --parallel
+
+    - name: Run tests
+      run: |
+        cd build
+        ctest --output-on-failure
+
+    - name: Generate coverage
+      run: |
+        cd build
+        ninja coverage
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: build/coverage.info
+        fail_ci_if_error: true
+
+  # Memory safety analysis
+  sanitizers:
+    name: Memory Sanitizers
+    needs: format-and-lint
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        sanitizer: [address, thread, undefined]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          cmake \
+          ninja-build \
+          clang \
+          clang++
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install Conan
+      run: |
+        pip install conan==${{ env.CONAN_VERSION }}
+        conan profile detect --force
+
+    - name: Configure with sanitizers
+      run: |
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=Debug \
+          -DENABLE_SANITIZERS=ON \
+          -DBUILD_TESTS=ON
+      env:
+        CC: clang
+        CXX: clang++
+
+    - name: Build
+      run: cmake --build build --parallel
+
+    - name: Run tests with ${{ matrix.sanitizer }} sanitizer
+      run: |
+        cd build
+        ASAN_OPTIONS=detect_leaks=1 ctest --output-on-failure
+      env:
+        TSAN_OPTIONS: halt_on_error=1
+        UBSAN_OPTIONS: halt_on_error=1
+
+  # Performance benchmarks
+  benchmarks:
+    name: Performance Benchmarks
+    needs: build-and-test
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          cmake \
+          ninja-build \
+          clang \
+          clang++
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install Conan
+      run: |
+        pip install conan==${{ env.CONAN_VERSION }}
+        conan profile detect --force
+
+    - name: Configure
+      run: |
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DBUILD_TESTS=ON
+      env:
+        CC: clang
+        CXX: clang++
+
+    - name: Build
+      run: cmake --build build --parallel
+
+    - name: Run benchmarks
+      run: |
+        cd build
+        ./tests/cpp_template_benchmarks --benchmark_format=json | tee benchmark_result.json
+
+    - name: Store benchmark result
+      uses: benchmark-action/github-action-benchmark@v1
+      with:
+        tool: 'googlecpp'
+        output-file-path: build/benchmark_result.json
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        auto-push: true
+        comment-on-alert: true
+        alert-threshold: '200%'
+        fail-on-alert: true
+
+  # Docker build
+  docker:
+    name: Docker Build
+    needs: format-and-lint
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build development image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        target: development
+        tags: cpp-template:dev
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Build and test
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        target: testing
+        tags: cpp-template:test
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    - name: Build runtime image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        target: runtime
+        tags: cpp-template:runtime
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+  # Release
+  release:
+    name: Create Release
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build-and-test, coverage, sanitizers, benchmarks, docker]
+    runs-on: ubuntu-22.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          cmake \
+          ninja-build \
+          clang \
+          clang++
+
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install Conan
+      run: |
+        pip install conan==${{ env.CONAN_VERSION }}
+        conan profile detect --force
+
+    - name: Build release packages
+      run: |
+        cmake -B build -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DBUILD_SHARED_LIBS=OFF
+        cmake --build build --parallel
+        cd build && cpack
+      env:
+        CC: clang
+        CXX: clang++
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: build/*.tar.gz
+        generate_release_notes: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
