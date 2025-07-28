@@ -211,6 +211,20 @@ docker system prune -a
 # Reopen in VS Code
 ```
 
+#### Permission Issues
+If you can't create files or have access issues:
+
+```bash
+# Quick fix - run in container terminal
+sudo chown -R developer:developer /home/developer/workspace
+sudo chmod -R 755 /home/developer/workspace
+
+# Or rebuild the container
+# Ctrl+Shift+P → "Remote-Containers: Rebuild Container"
+```
+
+For detailed permission troubleshooting, see [`.devcontainer/README.md`](.devcontainer/README.md).
+
 #### Extensions Not Loading
 - Check `.devcontainer/devcontainer.json` configuration
 - Reload window: `Ctrl+Shift+P` → `Developer: Reload Window`

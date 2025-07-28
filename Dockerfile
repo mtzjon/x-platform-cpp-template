@@ -137,10 +137,15 @@ RUN conan profile detect --force
 # Create non-root user for development
 RUN useradd -m -s /bin/bash developer && \
     usermod -aG sudo developer && \
-    echo 'developer ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+    echo 'developer ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
+    mkdir -p /home/developer/workspace && \
+    chown -R developer:developer /home/developer
 
 USER developer
 WORKDIR /home/developer/workspace
+
+# Create initial directories with proper permissions
+RUN mkdir -p /home/developer/.conan2 /home/developer/.cache
 
 # Runtime stage
 FROM ubuntu:22.04 AS runtime
