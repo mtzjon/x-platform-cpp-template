@@ -1,0 +1,66 @@
+{
+    "recommendations": [
+        // Essential C++ Development
+        "ms-vscode.cpptools",
+        "ms-vscode.cpptools-extension-pack",
+        "ms-vscode.cmake-tools",
+        "twxs.cmake",
+        
+        // Alternative C++ Language Server (Optional)
+        "llvm-vs-code-extensions.vscode-clangd",
+        
+        // Code Quality and Formatting
+        "xaver.clang-format",
+        "notskm.clang-tidy",
+        
+        // Documentation
+        "cschlosser.doxdocgen",
+        "bierner.docs-view",
+        
+        // Testing and Debugging
+        "matepek.vscode-catch2-test-adapter",
+        "ms-vscode.test-adapter-converter",
+        "vadimcn.vscode-lldb",
+        
+        // Package Management
+        "conan-io.conan",
+        
+        // Git and Version Control
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        
+        // Productivity
+        "ms-vscode.vscode-json",
+        "redhat.vscode-yaml",
+        "ms-python.python",
+        "ms-python.pylint",
+        
+        // Docker and Containers
+        "ms-azuretools.vscode-docker",
+        "ms-vscode-remote.remote-containers",
+        
+        // Markdown and Documentation
+        "yzhang.markdown-all-in-one",
+        "davidanson.vscode-markdownlint",
+        
+        // Utilities
+        "streetsidesoftware.code-spell-checker",
+        "gruntfuggly.todo-tree",
+        "aaron-bond.better-comments",
+        "pkief.material-icon-theme",
+        "zhuangtongfa.material-theme",
+        
+        // Additional Useful Extensions
+        "formulahendry.code-runner",
+        "christian-kohler.path-intellisense",
+        "ms-vscode.hexeditor",
+        "wayou.vscode-todo-highlight",
+        "oderwat.indent-rainbow",
+        "usernamehw.errorlens"
+    ],
+    "unwantedRecommendations": [
+        // Extensions that might conflict or are not needed
+        "ms-vscode.vscode-typescript",
+        "ms-vscode.vscode-javascript"
+    ]
+}

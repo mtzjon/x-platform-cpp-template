@@ -86,9 +86,38 @@ vcpkg install cmake ninja-build llvm doxygen
 pip3 install conan==2.0.14
 ```
 
+## 💻 Development Environments
+
+This project supports multiple development environments:
+
+| Environment | Setup Time | Features | Best For |
+|-------------|------------|----------|----------|
+| **VS Code Dev Container** | ⚡ 2 minutes | Full IDE, debugging, IntelliSense, extensions | Team development, consistency |
+| **Local Setup** | 🔧 5-10 minutes | Native performance, system integration | Personal development |
+| **Docker Compose** | 🐳 3 minutes | Isolated, reproducible, multiple services | CI/CD, testing |
+| **GitHub Codespaces** | ☁️ 1 minute | Cloud-based, zero setup | Quick experiments, reviews |
+
+**Recommendation**: Use VS Code Dev Container for the best development experience.
+
 ## 🚀 Quick Start
 
-### 1. Clone and Setup
+### Option 1: VS Code Dev Container (Recommended) 🐳
+
+The fastest way to get started with a fully configured development environment:
+
+1. **Prerequisites**: [VS Code](https://code.visualstudio.com/), [Docker](https://www.docker.com/products/docker-desktop), and [Remote-Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+2. **Clone and open**:
+   ```bash
+   git clone <your-repository-url> my_project
+   cd my_project
+   code .
+   ```
+3. **Reopen in Container** when prompted (or `Ctrl+Shift+P` → "Remote-Containers: Reopen in Container")
+
+✅ **Complete C++ environment with all tools pre-configured!** See [VS Code Dev Container Guide](docs/VSCODE_DEV_CONTAINER.md) for details.
+
+### Option 2: Local Setup
+
 ```bash
 git clone <your-repository-url> my_project
 cd my_project
@@ -101,7 +130,16 @@ pip3 install conan==2.0.14
 conan profile detect --force
 ```
 
-### 2. Build
+## 🔨 Building the Project
+
+### VS Code Dev Container
+If using the dev container, everything is pre-configured:
+- **Build**: `Ctrl+Shift+P` → `Tasks: Run Build Task` or `F7`
+- **Test**: `Ctrl+Shift+P` → `Tasks: Run Test Task`
+- **Debug**: `F5` or use the Debug panel
+- **Format**: `Shift+Alt+F` for current file or use tasks for all files
+
+### Local/Manual Build
 ```bash
 mkdir build && cd build
 cmake .. -G Ninja

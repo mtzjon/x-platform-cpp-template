@@ -1,0 +1,481 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        // Build Tasks
+        {
+            "label": "🔨 Configure CMake",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "-B", "build",
+                "-G", "Ninja",
+                "-DCMAKE_BUILD_TYPE=Debug",
+                "-DBUILD_TESTS=ON",
+                "-DBUILD_DOCS=ON",
+                "-DBUILD_EXAMPLES=ON",
+                "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": [],
+            "detail": "Configure the project with CMake"
+        },
+        {
+            "label": "🏗️ Build All",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build", "build",
+                "--parallel"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": [
+                "$gcc",
+                "$clang"
+            ],
+            "detail": "Build the entire project",
+            "dependsOn": "🔨 Configure CMake"
+        },
+        {
+            "label": "🏗️ Build Tests",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build", "build",
+                "--target", "cpp_template_tests",
+                "--parallel"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": [
+                "$gcc",
+                "$clang"
+            ],
+            "detail": "Build only the test executables",
+            "dependsOn": "🔨 Configure CMake"
+        },
+        {
+            "label": "🏗️ Build Examples",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "--build", "build",
+                "--target", "examples",
+                "--parallel"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": [
+                "$gcc",
+                "$clang"
+            ],
+            "detail": "Build only the example applications",
+            "dependsOn": "🔨 Configure CMake"
+        },
+
+        // Test Tasks
+        {
+            "label": "🧪 Run All Tests",
+            "type": "shell",
+            "command": "ctest",
+            "args": [
+                "--test-dir", "build",
+                "--output-on-failure",
+                "--parallel"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            },
+            "problemMatcher": [],
+            "detail": "Run all unit tests with CTest",
+            "dependsOn": "🏗️ Build Tests"
+        },
+        {
+            "label": "🧪 Run Tests (Verbose)",
+            "type": "shell",
+            "command": "ctest",
+            "args": [
+                "--test-dir", "build",
+                "--output-on-failure",
+                "--verbose",
+                "--parallel"
+            ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            },
+            "problemMatcher": [],
+            "detail": "Run all tests with verbose output",
+            "dependsOn": "🏗️ Build Tests"
+        },
+        {
+            "label": "⚡ Run Benchmarks",
+            "type": "shell",
+            "command": "./build/tests/cpp_template_benchmarks",
+            "args": [
+                "--benchmark_color=true",
+                "--benchmark_format=console",
+                "--benchmark_counters_tabular=true"
+            ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            },
+            "problemMatcher": [],
+            "detail": "Run performance benchmarks",
+            "dependsOn": "🏗️ Build Tests"
+        },
+
+        // Code Quality Tasks
+        {
+            "label": "🎨 Format Code",
+            "type": "shell",
+            "command": "make",
+            "args": ["format"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": [],
+            "detail": "Format all source code with clang-format"
+        },
+        {
+            "label": "🔍 Check Formatting",
+            "type": "shell",
+            "command": "make",
+            "args": ["format-check"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": [],
+            "detail": "Check code formatting compliance"
+        },
+        {
+            "label": "🔎 Run Static Analysis",
+            "type": "shell",
+            "command": "make",
+            "args": ["lint"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": [
+                {
+                    "owner": "clang-tidy",
+                    "fileLocation": ["relative", "${workspaceFolder}"],
+                    "pattern": {
+                        "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error|info|note):\\s+(.*)\\s+\\[(.*)\\]$",
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "severity": 4,
+                        "message": 5,
+                        "code": 6
+                    }
+                }
+            ],
+            "detail": "Run clang-tidy static analysis"
+        },
+
+        // Documentation Tasks
+        {
+            "label": "📚 Generate Documentation",
+            "type": "shell",
+            "command": "make",
+            "args": ["docs"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": [],
+            "detail": "Generate Doxygen documentation"
+        },
+        {
+            "label": "🌐 Serve Documentation",
+            "type": "shell",
+            "command": "python3",
+            "args": [
+                "-m", "http.server", "8080",
+                "--directory", "build/docs/html"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": [],
+            "detail": "Serve documentation on http://localhost:8080",
+            "dependsOn": "📚 Generate Documentation",
+            "isBackground": true
+        },
+
+        // Package Management Tasks
+        {
+            "label": "📦 Install Dependencies",
+            "type": "shell",
+            "command": "conan",
+            "args": [
+                "install", ".", 
+                "--build=missing",
+                "--output-folder=build"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": [],
+            "detail": "Install project dependencies with Conan"
+        },
+        {
+            "label": "🔄 Update Dependencies",
+            "type": "shell",
+            "command": "conan",
+            "args": [
+                "install", ".", 
+                "--build=missing",
+                "--update",
+                "--output-folder=build"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": [],
+            "detail": "Update project dependencies with Conan"
+        },
+
+        // Cleanup Tasks
+        {
+            "label": "🧹 Clean Build",
+            "type": "shell",
+            "command": "rm",
+            "args": ["-rf", "build"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": [],
+            "detail": "Remove build directory"
+        },
+        {
+            "label": "🧹 Clean All",
+            "type": "shell",
+            "command": "make",
+            "args": ["clean"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": [],
+            "detail": "Clean build artifacts and caches"
+        },
+
+        // Example Tasks
+        {
+            "label": "🚀 Run Basic Example",
+            "type": "shell",
+            "command": "./build/examples/basic_usage",
+            "args": [],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            },
+            "problemMatcher": [],
+            "detail": "Run the basic usage example",
+            "dependsOn": "🏗️ Build Examples"
+        },
+        {
+            "label": "⚙️ Run Config Example",
+            "type": "shell",
+            "command": "./build/examples/config_example",
+            "args": [],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            },
+            "problemMatcher": [],
+            "detail": "Run the configuration example",
+            "dependsOn": "🏗️ Build Examples"
+        },
+        {
+            "label": "📚 Run Library Example",
+            "type": "shell",
+            "command": "./build/examples/library_user",
+            "args": [],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            },
+            "problemMatcher": [],
+            "detail": "Run the library usage example",
+            "dependsOn": "🏗️ Build Examples"
+        },
+
+        // Coverage Tasks
+        {
+            "label": "📊 Generate Coverage Report",
+            "type": "shell",
+            "command": "make",
+            "args": ["coverage"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": [],
+            "detail": "Generate code coverage report",
+            "dependsOn": "🧪 Run All Tests"
+        },
+
+        // Docker Tasks
+        {
+            "label": "🐳 Build Docker Dev",
+            "type": "shell",
+            "command": "docker-compose",
+            "args": ["build", "dev"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": false
+            },
+            "problemMatcher": [],
+            "detail": "Build development Docker container"
+        },
+        {
+            "label": "🐳 Run Docker Tests",
+            "type": "shell",
+            "command": "docker-compose",
+            "args": ["run", "--rm", "test"],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "shared",
+                "showReuseMessage": true,
+                "clear": true
+            },
+            "problemMatcher": [],
+            "detail": "Run tests in Docker container"
+        }
+    ]
+}
