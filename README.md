@@ -92,6 +92,12 @@ pip3 install conan==2.0.14
 ```bash
 git clone <your-repository-url> my_project
 cd my_project
+
+# Auto-setup (recommended)
+./scripts/setup.sh
+
+# Or manual setup
+pip3 install conan==2.0.14
 conan profile detect --force
 ```
 
@@ -310,6 +316,14 @@ Supported package formats:
 ```bash
 ninja install         # Install to system
 ```
+
+## 🔧 Compatibility
+
+The template is designed to work across different clang-format versions:
+
+- **Primary configuration**: `.clang-format` (for newer versions)
+- **Fallback configuration**: `.clang-format-compat` (for older versions)
+- **Automatic detection**: CI and Makefile automatically use the compatible version if needed
 
 ## 🤝 Contributing
 

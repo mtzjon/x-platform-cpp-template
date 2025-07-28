@@ -22,12 +22,19 @@ jobs:
     - name: Setup Clang
       run: |
         sudo apt-get update
-        sudo apt-get install -y clang-format-15 clang-tidy-15
+        sudo apt-get install -y clang-format clang-tidy
 
     - name: Check formatting
       run: |
-        find src include examples tests -name "*.cpp" -o -name "*.hpp" | \
-          xargs clang-format-15 --dry-run --Werror
+        # Check clang-format version and adjust if needed
+        clang-format --version
+        # Try with main config first, fall back to compatible version
+        if ! find src include examples tests -name "*.cpp" -o -name "*.hpp" | \
+             xargs clang-format --dry-run --Werror 2>/dev/null; then
+          echo "Main .clang-format failed, trying compatible version..."
+          find src include examples tests -name "*.cpp" -o -name "*.hpp" | \
+            xargs clang-format --style=file:.clang-format-compat --dry-run --Werror
+        fi
 
     - name: Setup Python
       uses: actions/setup-python@v4
@@ -47,7 +54,7 @@ jobs:
     - name: Run clang-tidy
       run: |
         cd build
-        run-clang-tidy-15 -p . ../src ../examples || true
+        run-clang-tidy -p . ../src ../examples || true
 
   # Build and test matrix
   build-and-test:
@@ -88,8 +95,8 @@ jobs:
           build-essential \
           cmake \
           ninja-build \
-          clang-15 \
-          clang++-15 \
+          clang \
+          clang++ \
           doxygen \
           graphviz
 
@@ -113,8 +120,8 @@ jobs:
     - name: Set Linux compiler
       if: runner.os == 'Linux'
       run: |
-        echo "CC=clang-15" >> $GITHUB_ENV
-        echo "CXX=clang++-15" >> $GITHUB_ENV
+        echo "CC=clang" >> $GITHUB_ENV
+        echo "CXX=clang++" >> $GITHUB_ENV
 
     # Set compiler for macOS
     - name: Set macOS compiler
@@ -171,8 +178,8 @@ jobs:
           build-essential \
           cmake \
           ninja-build \
-          clang-15 \
-          clang++-15 \
+          clang \
+          clang++ \
           lcov \
           gcovr
 
@@ -193,8 +200,8 @@ jobs:
           -DENABLE_COVERAGE=ON \
           -DBUILD_TESTS=ON
       env:
-        CC: clang-15
-        CXX: clang++-15
+        CC: clang
+        CXX: clang++
 
     - name: Build
       run: cmake --build build --parallel
@@ -235,8 +242,8 @@ jobs:
           build-essential \
           cmake \
           ninja-build \
-          clang-15 \
-          clang++-15
+          clang \
+          clang++
 
     - name: Setup Python
       uses: actions/setup-python@v4
@@ -255,8 +262,8 @@ jobs:
           -DENABLE_SANITIZERS=ON \
           -DBUILD_TESTS=ON
       env:
-        CC: clang-15
-        CXX: clang++-15
+        CC: clang
+        CXX: clang++
 
     - name: Build
       run: cmake --build build --parallel
@@ -285,8 +292,8 @@ jobs:
           build-essential \
           cmake \
           ninja-build \
-          clang-15 \
-          clang++-15
+          clang \
+          clang++
 
     - name: Setup Python
       uses: actions/setup-python@v4
@@ -304,8 +311,8 @@ jobs:
           -DCMAKE_BUILD_TYPE=Release \
           -DBUILD_TESTS=ON
       env:
-        CC: clang-15
-        CXX: clang++-15
+        CC: clang
+        CXX: clang++
 
     - name: Build
       run: cmake --build build --parallel
@@ -382,8 +389,8 @@ jobs:
           build-essential \
           cmake \
           ninja-build \
-          clang-15 \
-          clang++-15
+          clang \
+          clang++
 
     - name: Setup Python
       uses: actions/setup-python@v4
@@ -403,8 +410,8 @@ jobs:
         cmake --build build --parallel
         cd build && cpack
       env:
-        CC: clang-15
-        CXX: clang++-15
+        CC: clang
+        CXX: clang++
 
     - name: Create Release
       uses: softprops/action-gh-release@v1

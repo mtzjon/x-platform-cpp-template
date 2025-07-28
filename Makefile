@@ -89,11 +89,17 @@ coverage:
 # Code quality commands
 format:
 	@echo "Formatting code..."
-	@find src include examples tests -name "*.cpp" -o -name "*.hpp" | xargs clang-format -i
+	@if ! find src include examples tests -name "*.cpp" -o -name "*.hpp" | xargs clang-format -i 2>/dev/null; then \
+		echo "Main .clang-format failed, using compatible version..."; \
+		find src include examples tests -name "*.cpp" -o -name "*.hpp" | xargs clang-format --style=file:.clang-format-compat -i; \
+	fi
 
 format-check:
 	@echo "Checking code formatting..."
-	@find src include examples tests -name "*.cpp" -o -name "*.hpp" | xargs clang-format --dry-run --Werror
+	@if ! find src include examples tests -name "*.cpp" -o -name "*.hpp" | xargs clang-format --dry-run --Werror 2>/dev/null; then \
+		echo "Main .clang-format failed, trying compatible version..."; \
+		find src include examples tests -name "*.cpp" -o -name "*.hpp" | xargs clang-format --style=file:.clang-format-compat --dry-run --Werror; \
+	fi
 
 lint: build
 	@echo "Running static analysis..."

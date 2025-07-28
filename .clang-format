@@ -21,9 +21,7 @@ IndentWrappedFunctionNames: false
 
 # Alignment
 AlignAfterOpenBracket: Align
-AlignArrayOfStructures: Right
 AlignConsecutiveAssignments: None
-AlignConsecutiveBitFields: None
 AlignConsecutiveDeclarations: None
 AlignConsecutiveMacros: None
 AlignEscapedNewlines: Left
@@ -72,7 +70,6 @@ BraceWrapping:
 
 # Breaking lines
 BreakAfterJavaFieldAnnotations: false
-BreakArrayInitializers: true
 BreakBeforeBinaryOperators: None
 BreakBeforeConceptDeclarations: true
 BreakBeforeInheritanceComma: false
@@ -100,8 +97,6 @@ DeriveLineEnding: true
 DerivePointerAlignment: false
 
 # Empty lines
-EmptyLineAfterAccessModifier: Never
-EmptyLineBeforeAccessModifier: LogicalBlock
 KeepEmptyLinesAtTheStartOfBlocks: false
 MaxEmptyLinesToKeep: 1
 

@@ -5,21 +5,21 @@ FROM ubuntu:22.04 AS builder
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
-ENV CC=clang-15
-ENV CXX=clang++-15
+ENV CC=clang
+ENV CXX=clang++
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
     ninja-build \
-    clang-15 \
-    clang++-15 \
-    clang-tools-15 \
-    clang-format-15 \
-    clang-tidy-15 \
-    libc++-15-dev \
-    libc++abi-15-dev \
+    clang \
+    clang++ \
+    clang-tools \
+    clang-format \
+    clang-tidy \
+    libc++-dev \
+    libc++abi-dev \
     python3 \
     python3-pip \
     python3-venv \
@@ -55,8 +55,8 @@ RUN mkdir -p build && cd build && \
     cmake .. \
         -G Ninja \
         -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_CXX_COMPILER=clang++-15 \
-        -DCMAKE_C_COMPILER=clang-15 \
+        -DCMAKE_CXX_COMPILER=clang++ \
+        -DCMAKE_C_COMPILER=clang \
         -DBUILD_SHARED_LIBS=OFF \
         -DBUILD_TESTS=ON \
         -DBUILD_DOCS=ON \
@@ -74,21 +74,21 @@ RUN cd build && ninja docs
 FROM ubuntu:22.04 AS development
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV CC=clang-15
-ENV CXX=clang++-15
+ENV CC=clang
+ENV CXX=clang++
 
 # Install development tools
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
     ninja-build \
-    clang-15 \
-    clang++-15 \
-    clang-tools-15 \
-    clang-format-15 \
-    clang-tidy-15 \
-    libc++-15-dev \
-    libc++abi-15-dev \
+    clang \
+    clang++ \
+    clang-tools \
+    clang-format \
+    clang-tidy \
+    libc++-dev \
+    libc++abi-dev \
     python3 \
     python3-pip \
     python3-venv \
@@ -133,8 +133,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install only runtime dependencies
 RUN apt-get update && apt-get install -y \
-    libc++1-15 \
-    libc++abi1-15 \
+    libc++1 \
+    libc++abi1 \
     libstdc++6 \
     && rm -rf /var/lib/apt/lists/*
 

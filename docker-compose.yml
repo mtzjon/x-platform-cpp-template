@@ -13,8 +13,8 @@ services:
       - conan-cache:/home/developer/.conan2
     working_dir: /home/developer/workspace
     environment:
-      - CC=clang-15
-      - CXX=clang++-15
+      - CC=clang
+      - CXX=clang++
     command: /bin/bash
     stdin_open: true
     tty: true
@@ -29,8 +29,8 @@ services:
     volumes:
       - build-artifacts:/workspace/build
     environment:
-      - CC=clang-15
-      - CXX=clang++-15
+      - CC=clang
+      - CXX=clang++
 
   # Testing with coverage
   test:
@@ -42,8 +42,8 @@ services:
     volumes:
       - test-results:/workspace/build
     environment:
-      - CC=clang-15
-      - CXX=clang++-15
+      - CC=clang
+      - CXX=clang++
 
   # Static analysis
   analysis:
@@ -56,8 +56,8 @@ services:
       - .:/workspace
       - analysis-results:/workspace/analysis
     environment:
-      - CC=clang-15
-      - CXX=clang++-15
+      - CC=clang
+      - CXX=clang++
 
   # Runtime
   runtime:
