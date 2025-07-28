@@ -196,18 +196,13 @@
     },
 
     // Use 'postCreateCommand' to run commands after the container is created.
-    "postCreateCommand": [
-        "bash", "-c", 
-        "echo 'Setting up development environment...' && \
-         conan profile detect --force && \
-         echo 'Conan profile configured' && \
-         git config --global --add safe.directory /home/developer/workspace && \
-         echo 'Git safe directory configured' && \
-         echo 'Development environment ready! 🚀'"
-    ],
+    "postCreateCommand": "bash .devcontainer/setup.sh",
 
     // Configure remoteUser to match the container user
     "remoteUser": "developer",
+    
+    // Update the remote user's UID/GID to match the local user
+    "updateRemoteUserUID": true,
 
     // Uncomment to override the container command
     // "overrideCommand": false,
@@ -225,8 +220,8 @@
             "installOhMyZsh": true,
             "upgradePackages": true,
             "username": "developer",
-            "userUid": "1000",
-            "userGid": "1000"
+            "userUid": "automatic",
+            "userGid": "automatic"
         },
         "ghcr.io/devcontainers/features/git:1": {
             "ppa": true,
@@ -246,5 +241,9 @@
     "initializeCommand": "echo 'Initializing VS Code Dev Container for C++ Template...'",
     "onCreateCommand": "echo 'Container created successfully!'",
     "updateContentCommand": "echo 'Content updated!'",
-    "postStartCommand": "echo 'Container started! Happy coding! 🎉'"
+    "postStartCommand": "echo 'Container started! Happy coding! 🎉'",
+    
+    // Alternative: Run as root and fix permissions (uncomment if having permission issues)
+    // "remoteUser": "root",
+    // "postCreateCommand": "bash -c 'chown -R 1000:1000 /workspaces && su - developer -c \"bash .devcontainer/setup.sh\"'"
 }
