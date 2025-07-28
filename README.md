@@ -243,8 +243,9 @@ add_project_executable(
 
 ### Format Code
 ```bash
-ninja format          # Format all source files
-ninja format-check     # Check formatting without modifying
+make format           # Format all source files
+make format-check     # Check formatting with Python validator (recommended)
+make format-check-clang # Check formatting with clang-format (if available)
 ```
 
 ### Static Analysis
