@@ -1,0 +1,250 @@
+{
+    "name": "C++ Template Development",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "dev",
+    "workspaceFolder": "/home/developer/workspace",
+    
+    // Configure tool-specific properties.
+    "customizations": {
+        "vscode": {
+            "settings": {
+                // C/C++ Configuration
+                "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+                "C_Cpp.default.intelliSenseMode": "linux-clang-x64",
+                "C_Cpp.default.compilerPath": "/usr/bin/clang++-14",
+                "C_Cpp.default.cStandard": "c17",
+                "C_Cpp.default.cppStandard": "c++20",
+                "C_Cpp.default.includePath": [
+                    "${workspaceFolder}/include",
+                    "${workspaceFolder}/build/_deps/**",
+                    "/usr/include/**"
+                ],
+                "C_Cpp.default.defines": [],
+                "C_Cpp.clang_format_path": "/usr/bin/clang-format-14",
+                "C_Cpp.clang_format_style": "file",
+                "C_Cpp.clang_format_fallbackStyle": "Google",
+                
+                // CMake Configuration
+                "cmake.configureOnOpen": true,
+                "cmake.buildDirectory": "${workspaceFolder}/build",
+                "cmake.generator": "Ninja",
+                "cmake.preferredGenerators": ["Ninja", "Unix Makefiles"],
+                "cmake.configureArgs": [
+                    "-DCMAKE_BUILD_TYPE=Debug",
+                    "-DBUILD_TESTS=ON",
+                    "-DBUILD_DOCS=ON",
+                    "-DBUILD_EXAMPLES=ON"
+                ],
+                "cmake.buildArgs": ["--parallel"],
+                "cmake.ctestArgs": ["--output-on-failure"],
+                
+                // Editor Configuration
+                "editor.tabSize": 4,
+                "editor.insertSpaces": true,
+                "editor.detectIndentation": false,
+                "editor.rulers": [100],
+                "editor.wordWrap": "bounded",
+                "editor.wordWrapColumn": 100,
+                "editor.formatOnSave": true,
+                "editor.formatOnType": true,
+                "editor.codeActionsOnSave": {
+                    "source.fixAll": true,
+                    "source.organizeImports": true
+                },
+                
+                // File Associations
+                "files.associations": {
+                    "*.hpp": "cpp",
+                    "*.h": "cpp",
+                    "*.cpp": "cpp",
+                    "*.cc": "cpp",
+                    "*.cxx": "cpp",
+                    "CMakeLists.txt": "cmake",
+                    "*.cmake": "cmake",
+                    "conanfile.py": "python",
+                    "conandata.yml": "yaml"
+                },
+                
+                // Search and Files
+                "search.exclude": {
+                    "**/build/**": true,
+                    "**/node_modules/**": true,
+                    "**/.conan2/**": true,
+                    "**/CMakeFiles/**": true
+                },
+                "files.exclude": {
+                    "**/build/**": true,
+                    "**/.conan2/**": true
+                },
+                "files.watcherExclude": {
+                    "**/build/**": true,
+                    "**/.conan2/**": true,
+                    "**/CMakeFiles/**": true
+                },
+                
+                // Git Configuration
+                "git.ignoreLimitWarning": true,
+                "git.autofetch": true,
+                
+                // Terminal Configuration
+                "terminal.integrated.defaultProfile.linux": "bash",
+                "terminal.integrated.profiles.linux": {
+                    "bash": {
+                        "path": "/bin/bash",
+                        "args": ["-l"]
+                    }
+                },
+                
+                // Doxygen Configuration
+                "doxdocgen.file.fileTemplate": "@file {name}",
+                "doxdocgen.file.copyrightTag": [
+                    "@copyright Copyright (c) {year} Your Company"
+                ],
+                "doxdocgen.generic.authorTag": "@author Your Name",
+                "doxdocgen.generic.versionTag": "@version 1.0.0",
+                "doxdocgen.generic.dateTemplate": "@date {year}",
+                
+                // Test Configuration
+                "testMate.cpp.test.executables": "build/tests/*{test,Test,TEST}*",
+                "testMate.cpp.debug.configTemplate": {
+                    "type": "cppdbg",
+                    "MIMode": "gdb",
+                    "program": "${exec}",
+                    "args": "${argsArray}",
+                    "cwd": "${workspaceFolder}",
+                    "environment": [
+                        {
+                            "name": "PATH",
+                            "value": "${workspaceFolder}/build/bin:${env:PATH}"
+                        }
+                    ]
+                }
+            },
+            
+            "extensions": [
+                // Essential C++ Development
+                "ms-vscode.cpptools",
+                "ms-vscode.cpptools-extension-pack",
+                "ms-vscode.cmake-tools",
+                "twxs.cmake",
+                
+                // Code Quality and Formatting
+                "llvm-vs-code-extensions.vscode-clangd",
+                "xaver.clang-format",
+                "notskm.clang-tidy",
+                
+                // Documentation
+                "cschlosser.doxdocgen",
+                "bierner.docs-view",
+                
+                // Testing and Debugging
+                "matepek.vscode-catch2-test-adapter",
+                "ms-vscode.test-adapter-converter",
+                "vadimcn.vscode-lldb",
+                
+                // Package Management
+                "conan-io.conan",
+                
+                // Git and Version Control
+                "eamodio.gitlens",
+                "mhutchie.git-graph",
+                
+                // Productivity
+                "ms-vscode.vscode-json",
+                "redhat.vscode-yaml",
+                "ms-python.python",
+                "ms-python.pylint",
+                
+                // Docker and Containers
+                "ms-azuretools.vscode-docker",
+                
+                // Markdown and Documentation
+                "yzhang.markdown-all-in-one",
+                "davidanson.vscode-markdownlint",
+                
+                // Utilities
+                "streetsidesoftware.code-spell-checker",
+                "gruntfuggly.todo-tree",
+                "aaron-bond.better-comments",
+                "pkief.material-icon-theme",
+                "zhuangtongfa.material-theme"
+            ]
+        }
+    },
+
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    "forwardPorts": [
+        8080,  // Documentation server
+        3000,  // Development server
+        9090   // Debugging port
+    ],
+
+    // Configure port attributes
+    "portsAttributes": {
+        "8080": {
+            "label": "Documentation",
+            "onAutoForward": "notify"
+        },
+        "3000": {
+            "label": "Dev Server",
+            "onAutoForward": "silent"
+        },
+        "9090": {
+            "label": "Debug Port",
+            "onAutoForward": "silent"
+        }
+    },
+
+    // Use 'postCreateCommand' to run commands after the container is created.
+    "postCreateCommand": [
+        "bash", "-c", 
+        "echo 'Setting up development environment...' && \
+         conan profile detect --force && \
+         echo 'Conan profile configured' && \
+         git config --global --add safe.directory /home/developer/workspace && \
+         echo 'Git safe directory configured' && \
+         echo 'Development environment ready! 🚀'"
+    ],
+
+    // Configure remoteUser to match the container user
+    "remoteUser": "developer",
+
+    // Uncomment to override the container command
+    // "overrideCommand": false,
+
+    // Mount host SSH keys for git operations
+    "mounts": [
+        "source=${localEnv:HOME}/.ssh,target=/home/developer/.ssh,type=bind,consistency=cached,readonly",
+        "source=${localEnv:HOME}/.gitconfig,target=/home/developer/.gitconfig,type=bind,consistency=cached,readonly"
+    ],
+
+    // Configure features to install additional tools
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "installZsh": true,
+            "installOhMyZsh": true,
+            "upgradePackages": true,
+            "username": "developer",
+            "userUid": "1000",
+            "userGid": "1000"
+        },
+        "ghcr.io/devcontainers/features/git:1": {
+            "ppa": true,
+            "version": "latest"
+        }
+    },
+
+    // Configure container environment variables
+    "containerEnv": {
+        "CONAN_USER_HOME": "/home/developer",
+        "CMAKE_GENERATOR": "Ninja",
+        "CC": "clang-14",
+        "CXX": "clang++-14"
+    },
+
+    // Lifecycle scripts
+    "initializeCommand": "echo 'Initializing VS Code Dev Container for C++ Template...'",
+    "onCreateCommand": "echo 'Container created successfully!'",
+    "updateContentCommand": "echo 'Content updated!'",
+    "postStartCommand": "echo 'Container started! Happy coding! 🎉'"
+}

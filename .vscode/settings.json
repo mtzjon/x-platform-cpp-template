@@ -1,0 +1,308 @@
+{
+    // C/C++ Configuration
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
+    "C_Cpp.default.intelliSenseMode": "linux-clang-x64",
+    "C_Cpp.default.cStandard": "c17",
+    "C_Cpp.default.cppStandard": "c++20",
+    "C_Cpp.default.includePath": [
+        "${workspaceFolder}/include",
+        "${workspaceFolder}/build/_deps/**"
+    ],
+    "C_Cpp.clang_format_style": "file",
+    "C_Cpp.clang_format_fallbackStyle": "Google",
+    "C_Cpp.errorSquiggles": "enabled",
+    "C_Cpp.autocomplete": "default",
+    "C_Cpp.suggestSnippets": true,
+
+    // CMake Configuration
+    "cmake.configureOnOpen": true,
+    "cmake.buildDirectory": "${workspaceFolder}/build",
+    "cmake.generator": "Ninja",
+    "cmake.preferredGenerators": [
+        "Ninja",
+        "Unix Makefiles"
+    ],
+    "cmake.configureArgs": [
+        "-DCMAKE_BUILD_TYPE=Debug",
+        "-DBUILD_TESTS=ON",
+        "-DBUILD_DOCS=ON",
+        "-DBUILD_EXAMPLES=ON",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+    ],
+    "cmake.buildArgs": [
+        "--parallel"
+    ],
+    "cmake.ctestArgs": [
+        "--output-on-failure",
+        "--verbose"
+    ],
+    "cmake.debugConfig": {
+        "name": "CMake Debug",
+        "type": "cppdbg",
+        "request": "launch",
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}",
+        "environment": [],
+        "console": "integratedTerminal",
+        "MIMode": "gdb",
+        "setupCommands": [
+            {
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            }
+        ]
+    },
+
+    // Editor Configuration
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    "editor.rulers": [100],
+    "editor.wordWrap": "bounded",
+    "editor.wordWrapColumn": 100,
+    "editor.formatOnSave": true,
+    "editor.formatOnType": false,
+    "editor.formatOnPaste": true,
+    "editor.trimAutoWhitespace": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll": true
+    },
+
+    // File Associations
+    "files.associations": {
+        "*.hpp": "cpp",
+        "*.h": "cpp",
+        "*.cpp": "cpp",
+        "*.cc": "cpp",
+        "*.cxx": "cpp",
+        "*.c": "c",
+        "CMakeLists.txt": "cmake",
+        "*.cmake": "cmake",
+        "*.cmake.in": "cmake",
+        "conanfile.py": "python",
+        "conanfile.txt": "ini",
+        "conandata.yml": "yaml",
+        "*.clang-format": "yaml",
+        "*.clang-tidy": "yaml"
+    },
+
+    // Search and Files Configuration
+    "search.exclude": {
+        "**/build/**": true,
+        "**/node_modules/**": true,
+        "**/.conan2/**": true,
+        "**/CMakeFiles/**": true,
+        "**/.git/**": true,
+        "**/docs/html/**": true,
+        "**/docs/latex/**": true
+    },
+    "files.exclude": {
+        "**/build/**": true,
+        "**/.conan2/**": true,
+        "**/CMakeFiles/**": true
+    },
+    "files.watcherExclude": {
+        "**/build/**": true,
+        "**/.conan2/**": true,
+        "**/CMakeFiles/**": true,
+        "**/node_modules/**": true
+    },
+
+    // Git Configuration
+    "git.ignoreLimitWarning": true,
+    "git.autofetch": true,
+    "git.confirmSync": false,
+    "git.enableSmartCommit": true,
+    "git.postCommitCommand": "sync",
+
+    // Terminal Configuration
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "terminal.integrated.profiles.linux": {
+        "bash": {
+            "path": "/bin/bash",
+            "args": ["-l"]
+        },
+        "zsh": {
+            "path": "/bin/zsh",
+            "args": ["-l"]
+        }
+    },
+    "terminal.integrated.cwd": "${workspaceFolder}",
+
+    // Doxygen Configuration
+    "doxdocgen.file.fileTemplate": "@file {name}",
+    "doxdocgen.file.copyrightTag": [
+        "@copyright Copyright (c) {year} Your Company"
+    ],
+    "doxdocgen.generic.authorTag": "@author Your Name",
+    "doxdocgen.generic.versionTag": "@version 1.0.0",
+    "doxdocgen.generic.dateTemplate": "@date {year}",
+    "doxdocgen.generic.briefTemplate": "@brief {text}",
+    "doxdocgen.generic.paramTemplate": "@param {param} {text}",
+    "doxdocgen.generic.returnTemplate": "@return {type} {text}",
+
+    // Test Configuration
+    "testMate.cpp.test.executables": "build/tests/*{test,Test,TEST}*",
+    "testMate.cpp.test.workingDirectory": "${workspaceFolder}/build",
+    "testMate.cpp.debug.configTemplate": {
+        "type": "cppdbg",
+        "MIMode": "gdb",
+        "program": "${exec}",
+        "args": "${argsArray}",
+        "cwd": "${workspaceFolder}",
+        "environment": [
+            {
+                "name": "PATH",
+                "value": "${workspaceFolder}/build:${env:PATH}"
+            }
+        ],
+        "setupCommands": [
+            {
+                "description": "Enable pretty-printing for gdb",
+                "text": "-enable-pretty-printing",
+                "ignoreFailures": true
+            }
+        ]
+    },
+
+    // Language-specific Settings
+    "[cpp]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools",
+        "editor.formatOnSave": true,
+        "editor.semanticHighlighting.enabled": true
+    },
+    "[c]": {
+        "editor.defaultFormatter": "ms-vscode.cpptools",
+        "editor.formatOnSave": true
+    },
+    "[cmake]": {
+        "editor.defaultFormatter": "twxs.cmake",
+        "editor.formatOnSave": true
+    },
+    "[json]": {
+        "editor.defaultFormatter": "ms-vscode.vscode-json",
+        "editor.formatOnSave": true
+    },
+    "[jsonc]": {
+        "editor.defaultFormatter": "ms-vscode.vscode-json",
+        "editor.formatOnSave": true
+    },
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.python",
+        "editor.formatOnSave": true
+    },
+    "[markdown]": {
+        "editor.defaultFormatter": "yzhang.markdown-all-in-one",
+        "editor.formatOnSave": false,
+        "editor.wordWrap": "on"
+    },
+
+    // IntelliSense Configuration
+    "C_Cpp.intelliSenseEngine": "default",
+    "C_Cpp.enhancedColorization": "enabled",
+    "C_Cpp.workspaceParsingPriority": "highest",
+    "C_Cpp.loggingLevel": "Warning",
+
+    // Code Actions and Quick Fixes
+    "C_Cpp.codeAnalysis.clangTidy.enabled": true,
+    "C_Cpp.codeAnalysis.clangTidy.runAutomatically": true,
+
+    // Breadcrumbs and Navigation
+    "breadcrumbs.enabled": true,
+    "breadcrumbs.symbolPath": "on",
+    "outline.showVariables": false,
+
+    // Minimap Configuration
+    "editor.minimap.enabled": true,
+    "editor.minimap.maxColumn": 100,
+
+    // Spell Checking
+    "cSpell.words": [
+        "cpp",
+        "hpp",
+        "cmake",
+        "conan",
+        "doxygen",
+        "clang",
+        "ninja",
+        "gtest",
+        "gmock",
+        "spdlog",
+        "nlohmann",
+        "fmt"
+    ],
+    "cSpell.enableFiletypes": [
+        "cmake",
+        "cpp",
+        "c"
+    ],
+
+    // TODO Tree Configuration
+    "todo-tree.general.tags": [
+        "BUG",
+        "HACK",
+        "FIXME",
+        "TODO",
+        "XXX",
+        "[ ]",
+        "[x]"
+    ],
+    "todo-tree.highlights.defaultHighlight": {
+        "icon": "alert",
+        "type": "text",
+        "foreground": "red",
+        "background": "white",
+        "opacity": 50,
+        "iconColour": "blue"
+    },
+
+    // Better Comments Configuration
+    "better-comments.tags": [
+        {
+            "tag": "!",
+            "color": "#FF2D00",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+        {
+            "tag": "?",
+            "color": "#3498DB",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+        {
+            "tag": "//",
+            "color": "#474747",
+            "strikethrough": true,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+        {
+            "tag": "todo",
+            "color": "#FF8C00",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        },
+        {
+            "tag": "*",
+            "color": "#98C379",
+            "strikethrough": false,
+            "underline": false,
+            "backgroundColor": "transparent",
+            "bold": false,
+            "italic": false
+        }
+    ]
+}
