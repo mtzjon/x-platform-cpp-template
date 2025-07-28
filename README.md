@@ -326,6 +326,10 @@ The template is designed to work across different clang-format versions:
 - **Fallback configuration**: `.clang-format-compat` (for older versions)
 - **Automatic detection**: CI and Makefile automatically use the compatible version if needed
 
+### Dependency Conflicts
+
+If you encounter clang package dependency conflicts (common in Ubuntu/Debian), see [DEPENDENCY_CONFLICTS_FIX.md](docs/DEPENDENCY_CONFLICTS_FIX.md) for detailed resolution steps. The project uses clang-14 specifically to avoid version conflicts.
+
 ## 🤝 Contributing
 
 1. **Code Style**: Follow the clang-format configuration

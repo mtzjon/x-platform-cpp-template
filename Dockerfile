@@ -5,21 +5,24 @@ FROM ubuntu:22.04 AS builder
 
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
-ENV CC=clang
-ENV CXX=clang++
+ENV CC=clang-14
+ENV CXX=clang++-14
 
 # Install build dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && \
+    # Clean up potential conflicts first
+    apt-get autoremove -y || true && \
+    apt-get install -y \
     build-essential \
     cmake \
     ninja-build \
-    clang \
-    clang++ \
-    clang-tools \
-    clang-format \
-    clang-tidy \
-    libc++-dev \
-    libc++abi-dev \
+    clang-14 \
+    clang++-14 \
+    clang-tools-14 \
+    clang-format-14 \
+    clang-tidy-14 \
+    libc++-14-dev \
+    libc++abi-14-dev \
     python3 \
     python3-pip \
     python3-venv \
@@ -35,7 +38,12 @@ RUN apt-get update && apt-get install -y \
     wget \
     curl \
     unzip \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    # Create symlinks for generic tool names
+    && ln -sf /usr/bin/clang-14 /usr/bin/clang \
+    && ln -sf /usr/bin/clang++-14 /usr/bin/clang++ \
+    && ln -sf /usr/bin/clang-format-14 /usr/bin/clang-format \
+    && ln -sf /usr/bin/clang-tidy-14 /usr/bin/clang-tidy
 
 # Install Conan
 RUN python3 -m pip install --upgrade pip
@@ -74,21 +82,24 @@ RUN cd build && ninja docs
 FROM ubuntu:22.04 AS development
 
 ENV DEBIAN_FRONTEND=noninteractive
-ENV CC=clang
-ENV CXX=clang++
+ENV CC=clang-14
+ENV CXX=clang++-14
 
 # Install development tools
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && \
+    # Clean up potential conflicts first
+    apt-get autoremove -y || true && \
+    apt-get install -y \
     build-essential \
     cmake \
     ninja-build \
-    clang \
-    clang++ \
-    clang-tools \
-    clang-format \
-    clang-tidy \
-    libc++-dev \
-    libc++abi-dev \
+    clang-14 \
+    clang++-14 \
+    clang-tools-14 \
+    clang-format-14 \
+    clang-tidy-14 \
+    libc++-14-dev \
+    libc++abi-14-dev \
     python3 \
     python3-pip \
     python3-venv \
@@ -109,7 +120,12 @@ RUN apt-get update && apt-get install -y \
     nano \
     curl \
     wget \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    # Create symlinks for generic tool names
+    && ln -sf /usr/bin/clang-14 /usr/bin/clang \
+    && ln -sf /usr/bin/clang++-14 /usr/bin/clang++ \
+    && ln -sf /usr/bin/clang-format-14 /usr/bin/clang-format \
+    && ln -sf /usr/bin/clang-tidy-14 /usr/bin/clang-tidy
 
 # Install Conan
 RUN python3 -m pip install --upgrade pip
@@ -133,8 +149,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # Install only runtime dependencies
 RUN apt-get update && apt-get install -y \
-    libc++1 \
-    libc++abi1 \
+    libc++1-14 \
+    libc++abi1-14 \
     libstdc++6 \
     && rm -rf /var/lib/apt/lists/*
 

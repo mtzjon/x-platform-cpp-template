@@ -144,14 +144,16 @@ install_dependencies() {
         "debian")
             print_status "Installing dependencies using apt..."
             sudo apt-get update
+            # Clean up potential package conflicts
+            sudo apt-get autoremove -y || true
             sudo apt-get install -y \
                 build-essential \
                 cmake \
                 ninja-build \
-                clang \
-                clang++ \
-                clang-format \
-                clang-tidy \
+                clang-14 \
+                clang++-14 \
+                clang-format-14 \
+                clang-tidy-14 \
                 python3 \
                 python3-pip \
                 python3-venv \
@@ -160,6 +162,11 @@ install_dependencies() {
                 graphviz \
                 lcov \
                 gcovr
+            # Create symlinks for generic tool names
+            sudo ln -sf /usr/bin/clang-14 /usr/bin/clang || true
+            sudo ln -sf /usr/bin/clang++-14 /usr/bin/clang++ || true
+            sudo ln -sf /usr/bin/clang-format-14 /usr/bin/clang-format || true
+            sudo ln -sf /usr/bin/clang-tidy-14 /usr/bin/clang-tidy || true
             ;;
         "rhel")
             print_status "Installing dependencies using yum/dnf..."
