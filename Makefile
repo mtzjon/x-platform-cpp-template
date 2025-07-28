@@ -96,6 +96,10 @@ format:
 
 format-check:
 	@echo "Checking code formatting..."
+	@python3 scripts/validate_formatting.py
+
+format-check-clang:
+	@echo "Checking code formatting with clang-format..."
 	@if ! find src include examples tests -name "*.cpp" -o -name "*.hpp" | xargs clang-format --dry-run --Werror 2>/dev/null; then \
 		echo "Main .clang-format failed, trying compatible version..."; \
 		find src include examples tests -name "*.cpp" -o -name "*.hpp" | xargs clang-format --style=file:.clang-format-compat --dry-run --Werror; \
